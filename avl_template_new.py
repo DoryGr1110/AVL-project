@@ -1,15 +1,15 @@
 #username - complete info
-#id1      - complete info 
-#name1    - complete info 
+#id1      - complete info
+#name1    - complete info
 #id2      - complete info
-#name2    - complete info  
+#name2    - complete info
 
 
 
 """A class represnting a node in an AVL tree"""
 
 class AVLNode(object):
-	"""Constructor, you are allowed to add more fields. 
+	"""Constructor, you are allowed to add more fields.
 
 	@type value: str
 	@param value: data of your node
@@ -20,8 +20,8 @@ class AVLNode(object):
 		self.right = None
 		self.parent = None
 		self.height = -1 # Balance factor
-		self.size = -1
-		
+		self.size = 0
+
 
 	"""returns the left child
 	@rtype: AVLNode
@@ -114,6 +114,12 @@ class AVLNode(object):
 	def isRealNode(self):
 		return self.height != -1
 
+	def resetHeight(self):
+		self.height = 1 + max(self.getRight().getHeight(), self.getLeft().getHeight())
+
+	def resetSize(self):
+		self.size = self.getRight().getSize() + self.getLeft().getSize() + 1
+
 
 
 """
@@ -130,6 +136,9 @@ class AVLTreeList(object):
 		self.size = 0
 		self.root = None
 		# add your fields here
+		self.first = None
+		self.last = None
+
 
 
 	"""returns whether the list is empty
@@ -138,7 +147,7 @@ class AVLTreeList(object):
 	@returns: True if the list is empty, False otherwise
 	"""
 	def empty(self):
-		return None
+		return self.size == 0
 
 
 	"""retrieves the value of the i'th item in the list
@@ -184,7 +193,10 @@ class AVLTreeList(object):
 	@returns: the value of the first item, None if the list is empty
 	"""
 	def first(self):
-		return None
+		if self.empty():
+			return None
+		return self.first().getValue()
+
 
 	"""returns the value of the last item in the list
 
@@ -192,7 +204,9 @@ class AVLTreeList(object):
 	@returns: the value of the last item, None if the list is empty
 	"""
 	def last(self):
-		return None
+		if self.empty():
+			return None
+		return self.last().getValue()
 
 	"""returns an array representing list 
 
@@ -257,3 +271,90 @@ class AVLTreeList(object):
 		return None
 
 
+def test():
+	rootd = AVLNode("d")
+	firstLeftb = AVLNode("b")
+	firstRighte = AVLNode("e")
+	secondLefta = AVLNode("a")
+	secondRightc = AVLNode("a")
+
+	rootd.setLeft(firstLeftb)
+	firstLeftb.setParent(rootd)
+	rootd.setRight(firstRighte)
+	firstRighte.setParent(rootd)
+
+	firstLeftb.setLeft(secondLefta)
+	secondLefta.setParent(firstLeftb)
+	firstLeftb.setRight(secondRightc)
+	secondRightc.setParent(firstLeftb)
+
+	virtual1 = AVLNode("virtual1")
+	virtual2 = AVLNode("virtual2")
+	virtual3 = AVLNode("virtual3")
+	virtual4 = AVLNode("virtual4")
+	virtual5 = AVLNode("virtual5")
+	virtual6 = AVLNode("virtual6")
+
+	virtual1.setParent(secondLefta)
+	secondLefta.setLeft(virtual1)
+	virtual2.setParent(secondLefta)
+	secondLefta.setRight(virtual2)
+	virtual3.setParent(secondRightc)
+	secondRightc.setLeft(virtual3)
+	virtual4.setParent(secondRightc)
+	secondRightc.setRight(virtual4)
+	virtual5.setParent(firstRighte)
+	firstRighte.setLeft(virtual5)
+	virtual6.setParent(firstRighte)
+	firstRighte.setRight(virtual6)
+
+	rootd.resetHeight()
+	firstLeftb.resetHeight()
+	firstRighte.resetHeight()
+	secondLefta.resetHeight()
+	secondRightc.resetHeight()
+
+	tree = AVLTreeList()
+	tree.root = rootd
+	tree.size = 5
+
+	if (tree.retrieve(2) != "c" or tree.retrieve(4) != "e"):
+		print("***error in retrieve method***")
+
+	rootd.rotate("right")
+
+	if (secondRightc.getParent() != rootd or
+			rootd.getLeft() != secondRightc or
+			rootd.getParent() != firstLeftb or
+			firstLeftb.getRight() != rootd or
+			firstLeftb.getParent() != None or
+			firstLeftb.getHeight() != 2 or
+			rootd.getHeight() != 1):
+		print("***error in rotate method***")
+
+	rootd.rotate("right")
+
+	if (firstRighte.getParent() != rootd or
+			rootd.getRight() != firstRighte or
+			rootd.getParent() != secondRightc or
+			secondRightc.getRight() != rootd or
+			secondRightc.getParent() != firstLeftb or
+			secondRightc.getHeight() != 2 or
+			firstRighte.getHeight() != 0 or
+			rootd.getHeight() != 1):
+		print("***error in rotate method***")
+
+	secondRightc.rotate("left")
+
+	if (secondRightc.getParent() != rootd or
+			rootd.getLeft() != secondRightc or
+			rootd.getParent() != firstLeftb or
+			firstLeftb.getRight() != rootd or
+			firstLeftb.getParent() != None or
+			firstLeftb.getHeight() != 2 or
+			rootd.getHeight() != 1):
+		print("***error in rotate method***")
+
+
+if __name__ == "__main__":
+    test()
