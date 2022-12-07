@@ -334,10 +334,10 @@ class AVLTreeList(object):
         return retrieveNodeRec(self.root, i)
 
     def retrieveNodeRec(self, currentNode, i):
-        if currentNode.getLeft().getSize() == i - 1:
+        if self.currentNode.getLeft().getSize() == i - 1:
             return currentNode
-        elif currentNode.getLeft().getSize() > i:
-            return retrieveNodeRec(self, currentNode.getLeft(), i)
-        return retrieveNodeRec(self, currentNode.getRight(), i - (currentNode.getLeft().getSize() + 1))
+        elif self.currentNode.getLeft().getSize() > i:
+            return self.retrieveNodeRec(self, currentNode.getLeft(), i)
+        return self.retrieveNodeRec(self, currentNode.getRight(), i - (currentNode.getLeft().getSize() + 1))
 
 
