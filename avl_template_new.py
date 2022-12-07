@@ -328,7 +328,7 @@ class AVLTreeList(object):
 	"""
 
     def getRoot(self):
-        return None
+        return self.root
 
     def retrieveNode(self, i):
         return retrieveNodeRec(self.root, i)
