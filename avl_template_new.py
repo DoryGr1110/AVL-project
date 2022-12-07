@@ -189,9 +189,9 @@ A class implementing the ADT list, using an AVL tree.
 class AVLTreeList(object):
     """
 	Constructor, you are allowed to add more fields.
-
 	"""
-	def __init__(self):
+
+    def __init__(self):
 		self.size = 0
 		self.root = None
 		# add your fields here
@@ -204,7 +204,7 @@ class AVLTreeList(object):
 	@rtype: bool
 	@returns: True if the list is empty, False otherwise
 	"""
-	def empty(self):
+    def empty(self):
 		return self.size == 0
 
     """retrieves the value of the i'th item in the list
@@ -251,7 +251,7 @@ class AVLTreeList(object):
 	@returns: the value of the first item, None if the list is empty
 	"""
 
-	def first(self):
+    def first(self):
 		if self.empty():
 			return None
 		return self.first().getValue()
@@ -263,7 +263,7 @@ class AVLTreeList(object):
 	@returns: the value of the last item, None if the list is empty
 	"""
 
-	def last(self):
+    def last(self):
 		if self.empty():
 			return None
 		return self.last().getValue()
@@ -336,14 +336,14 @@ class AVLTreeList(object):
         return self.root
 
     def retrieveNode(self, i):
-        return retrieveNodeRec(self.root, i)
+        return self.retrieveNodeRec(self.root, i)
 
     def retrieveNodeRec(self, currentNode, i):
         if currentNode.getLeft().getSize() == i - 1:
             return currentNode
         elif currentNode.getLeft().getSize() > i:
-            return retrieveNodeRec(self, currentNode.getLeft(), i)
-        return retrieveNodeRec(self, currentNode.getRight(), i - (currentNode.getLeft().getSize() + 1))
+            return self.retrieveNodeRec(self, currentNode.getLeft(), i)
+        return self.retrieveNodeRec(self, currentNode.getRight(), i - (currentNode.getLeft().getSize() + 1))
 
 
 def test():
