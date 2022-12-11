@@ -345,6 +345,96 @@ class AVLTreeList(object):
             return self.retrieveNodeRec(self, currentNode.getLeft(), i)
         return self.retrieveNodeRec(self, currentNode.getRight(), i - (currentNode.getLeft().getSize() + 1))
 
+def test():
+    rootd = AVLNode("d")
+    firstLeftb = AVLNode("b")
+    firstRighte = AVLNode("e")
+    secondLefta = AVLNode("a")
+    secondRightc = AVLNode("a")
+
+    rootd.setLeft(firstLeftb)
+    firstLeftb.setParent(rootd)
+    rootd.setRight(firstRighte)
+    firstRighte.setParent(rootd)
+
+    firstLeftb.setLeft(secondLefta)
+    secondLefta.setParent(firstLeftb)
+    firstLeftb.setRight(secondRightc)
+    secondRightc.setParent(firstLeftb)
+
+    virtual1 = AVLNode("virtual1")
+    virtual2 = AVLNode("virtual2")
+    virtual3 = AVLNode("virtual3")
+    virtual4 = AVLNode("virtual4")
+    virtual5 = AVLNode("virtual5")
+    virtual6 = AVLNode("virtual6")
+
+    virtual1.setParent(secondLefta)
+    secondLefta.setLeft(virtual1)
+    virtual2.setParent(secondLefta)
+    secondLefta.setRight(virtual2)
+    virtual3.setParent(secondRightc)
+    secondRightc.setLeft(virtual3)
+    virtual4.setParent(secondRightc)
+    secondRightc.setRight(virtual4)
+    virtual5.setParent(firstRighte)
+    firstRighte.setLeft(virtual5)
+    virtual6.setParent(firstRighte)
+    firstRighte.setRight(virtual6)
+
+    rootd.resetHeight()
+    firstLeftb.resetHeight()
+    firstRighte.resetHeight()
+    secondLefta.resetHeight()
+    secondRightc.resetHeight()
+
+    secondRightc.resetSize()
+    secondLefta.resetSize()
+    firstRighte.resetSize()
+    firstLeftb.resetSize()
+    rootd.resetSize()
+
+    tree = AVLTreeList()
+    tree.root = rootd
+    tree.size = 5
+
+    if (tree.retrieve(2) != "c" or tree.retrieve(4) != "e"):
+        print("***error in retrieve method***")
+
+    rootd.rotate("right")
+
+    if (secondRightc.getParent() != rootd or
+			rootd.getLeft() != secondRightc or
+			rootd.getParent() != firstLeftb or
+			firstLeftb.getRight() != rootd or
+			firstLeftb.getParent() != None or
+			firstLeftb.getHeight() != 2 or
+			rootd.getHeight() != 1):
+        print("***error in rotate method***")
+
+    rootd.rotate("right")
+
+    if (firstRighte.getParent() != rootd or
+			rootd.getRight() != firstRighte or
+			rootd.getParent() != secondRightc or
+			secondRightc.getRight() != rootd or
+			secondRightc.getParent() != firstLeftb or
+			secondRightc.getHeight() != 2 or
+			firstRighte.getHeight() != 0 or
+			rootd.getHeight() != 1):
+        print("***error in rotate method***")
+
+    secondRightc.rotate("left")
+
+    if (secondRightc.getParent() != rootd or
+			rootd.getLeft() != secondRightc or
+			rootd.getParent() != firstLeftb or
+			firstLeftb.getRight() != rootd or
+			firstLeftb.getParent() != None or
+			firstLeftb.getHeight() != 2 or
+			rootd.getHeight() != 1):
+        print("***error in rotate method***")
 
 if __name__ == "__main__":
     test()
+
