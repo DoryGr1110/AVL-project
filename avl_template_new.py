@@ -5,8 +5,8 @@
 # name2    - complete info
 
 
-"""A class represnting a node in an AVL tree"""
 
+"""A class represnting a node in an AVL tree"""
 
 class AVLNode(object):
     """Constructor, you are allowed to add more fields.
@@ -23,7 +23,7 @@ class AVLNode(object):
         self.height = -1  # Balance factor
         self.size = 0
 
-    """returns the left child
+	"""returns the left child
 	@rtype: AVLNode
 	@returns: the left child of self, None if there is no left child
 	"""
@@ -189,23 +189,23 @@ A class implementing the ADT list, using an AVL tree.
 class AVLTreeList(object):
     """
 	Constructor, you are allowed to add more fields.
-
 	"""
 
     def __init__(self):
-        self.size = 0
-        self.root = None
+		self.size = 0
+		self.root = None
+		# add your fields here
+		self.first = None
+		self.last = None
 
-    # add your fields here
 
     """returns whether the list is empty
 
 	@rtype: bool
 	@returns: True if the list is empty, False otherwise
 	"""
-
     def empty(self):
-        return None
+		return self.size == 0
 
     """retrieves the value of the i'th item in the list
 
@@ -252,7 +252,10 @@ class AVLTreeList(object):
 	"""
 
     def first(self):
-        return None
+		if self.empty():
+			return None
+		return self.first().getValue()
+
 
     """returns the value of the last item in the list
 
@@ -261,7 +264,9 @@ class AVLTreeList(object):
 	"""
 
     def last(self):
-        return None
+		if self.empty():
+			return None
+		return self.last().getValue()
 
     """returns an array representing list 
 
@@ -331,7 +336,7 @@ class AVLTreeList(object):
         return self.root
 
     def retrieveNode(self, i):
-        return retrieveNodeRec(self.root, i)
+        return self.retrieveNodeRec(self.root, i)
 
     def retrieveNodeRec(self, currentNode, i):
         if self.currentNode.getLeft().getSize() == i - 1:
@@ -341,3 +346,5 @@ class AVLTreeList(object):
         return self.retrieveNodeRec(self, currentNode.getRight(), i - (currentNode.getLeft().getSize() + 1))
 
 
+if __name__ == "__main__":
+    test()
