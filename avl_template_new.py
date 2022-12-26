@@ -142,43 +142,48 @@ class AVLNode(object):
             return "root"
         return "left" if self.getParent().getLeft() == self else "right"
 
-    def rotate(self, side):
-        x = self
-        if side == "right":
-            parent = x.getParent()
-            relToPar = x.relationToParent()
-            y = x.getLeft()
-            x.setLeft(y.getRight())
-            x.getLeft().setParent(x)
-            y.setRight(x)
-            x.setParent(y)
-            y.setParent(parent)
-            if relToPar != "root":
-                if relToPar == "right":
-                    parent.setRight(y)
-                else:
-                    parent.setLeft(y)
-        else:
-            parent = x.getParent()
-            relToPar = x.relationToParent()
-            y = x.getRight()
-            x.setRight(y.getLeft())
-            x.getRight().setParent(x)
-            y.setLeft(x)
-            x.setParent(y)
-            if relToPar != "root":
-                y.setParent(parent)
-                if relToPar == "right":
-                    parent.setRight(y)
-                else:
-                    parent.setLeft(y)
-        x.resetSize()
-        x.resetHeight()
-        y.resetSize()
-        y.resetHeight()
-        if relToPar != "root":
-            parent.resetSize()
-            parent.resetHeight()
+	def relationToParent(self):
+		if self.getParent() is None:
+			return "root"
+		return "left" if self.getParent().getLeft() == self else "right"
+
+	def rotate(self, side):
+		x = self
+		if side == "right":
+			parent = x.getParent()
+			relToPar = x.relationToParent()
+			y = x.getLeft()
+			x.setLeft(y.getRight())
+			x.getLeft().setParent(x)
+			y.setRight(x)
+			x.setParent(y)
+			y.setParent(parent)
+			if relToPar != "root":
+				if relToPar == "right":
+					parent.setRight(y)
+				else:
+					parent.setLeft(y)
+		else:
+			parent = x.getParent()
+			relToPar = x.relationToParent()
+			y = x.getRight()
+			x.setRight(y.getLeft())
+			x.getRight().setParent(x)
+			y.setLeft(x)
+			x.setParent(y)
+			y.setParent(parent)
+			if relToPar != "root":
+				if relToPar == "right":
+					parent.setRight(y)
+				else:
+					parent.setLeft(y)
+		x.resetSize()
+		x.resetHeight()
+		y.resetSize()
+		y.resetHeight()
+		if relToPar != "root":
+			parent.resetSize()
+			parent.resetHeight()
 
     def setSize(self, size):
         self.size = size
@@ -232,7 +237,7 @@ class AVLTreeList(object):
     """
 
     def retrieve(self, i):
-        return self.retrieveNode(i).getValue
+        return self.retrieveNode(i).getValue()
 
     """inserts val at position i in the list
     
@@ -354,7 +359,13 @@ class AVLTreeList(object):
     """
 
     def listToArray(self):
-        return None
+        return self.listToArrayRec(self.root)
+
+    def listToArrayRec(self, node):
+        if not node.isRealNode():
+            return []
+        return self.listToArrayRec(node.getLeft()) + [node.value] + self.listToArrayRec(node.getRight())
+
 
     """returns the size of the list 
     
@@ -363,7 +374,7 @@ class AVLTreeList(object):
     """
 
     def length(self):
-        return None
+        return self.size
 
     """sort the info values of the list
     
@@ -381,7 +392,23 @@ class AVLTreeList(object):
     """
 
     def permutation(self):
-        return None
+        new_tree = self.copyTree(self.getRoot())
+
+
+	def copyTree(self, root):
+		new_node = AVLNode(root.getValue())
+
+		left_child = self.copyTree(root.getLeft())
+		right_child = self.copyTree(root.getRight())
+
+		new_node.setLeft(left_child)
+		new_node.setRight(right_child)
+
+		left_child.setParent(new_node)
+		right_child.setParent(new_node)
+
+		return new_node
+
 
     """concatenates lst to self
     
@@ -410,6 +437,21 @@ class AVLTreeList(object):
     @rtype: AVLNode
     @returns: the root, None if the list is empty
     """
+
+    def successor(self, node):
+        if node is self.last:
+            return None
+        p = node
+        if node.getRight().isRealNode():
+            p = p.getRight()
+            while p.getLeft().isRealNode():
+                p = p.getLeft()
+            return p
+        else:
+            while p.relationToParent() == 'right':
+                p = p.getParent()
+            return p.getParent()
+
 
     def getRoot(self):
         return self.root
@@ -516,7 +558,7 @@ def test():
     tree.root = rootd
     tree.size = 5
 
-    if tree.retrieve(2) != "c" or tree.retrieve(4) != "e":
+    if (tree.retrieve(1) != "b" or tree.retrieve(3) != "d"):
         print("***error in retrieve method***")
 
     rootd.rotate("right")
@@ -528,7 +570,7 @@ def test():
             firstLeftb.getParent() != None or
             firstLeftb.getHeight() != 2 or
             rootd.getHeight() != 1):
-        print("***error in rotate method***")
+        print("***error in rotate method1***")
 
     rootd.rotate("right")
 
@@ -540,7 +582,7 @@ def test():
             secondRightc.getHeight() != 2 or
             firstRighte.getHeight() != 0 or
             rootd.getHeight() != 1):
-        print("***error in rotate method***")
+        print("***error in rotate method2***")
 
     secondRightc.rotate("left")
 
@@ -554,5 +596,9 @@ def test():
         print("***error in rotate method***")
 
 if __name__ == "__main__":
-    test()
+    # test1()
+    # test2()
+    # test3()
+    print()
+
 
