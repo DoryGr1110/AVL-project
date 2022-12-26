@@ -321,6 +321,10 @@ class AVLTreeList(object):
         parent.resetSize()
 
         cnt_rebalanced += self.balance_all_the_way_up(parent)
+        if i == 0:
+            self.first = self.retrieveNode(0)
+        if i == self.length():
+            self.last = self.retrieveNode(self.length() - 1)
         self.test_insert_and_delete(parent)
         return cnt_rebalanced
 
@@ -588,9 +592,6 @@ def test():
         print("***error in rotate method***")
 
 if __name__ == "__main__":
-    # test1()
-    # test2()
-    # test3()
     print()
 
 
