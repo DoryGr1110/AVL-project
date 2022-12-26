@@ -142,48 +142,43 @@ class AVLNode(object):
             return "root"
         return "left" if self.getParent().getLeft() == self else "right"
 
-	def relationToParent(self):
-		if self.getParent() is None:
-			return "root"
-		return "left" if self.getParent().getLeft() == self else "right"
-
-	def rotate(self, side):
-		x = self
-		if side == "right":
-			parent = x.getParent()
-			relToPar = x.relationToParent()
-			y = x.getLeft()
-			x.setLeft(y.getRight())
-			x.getLeft().setParent(x)
-			y.setRight(x)
-			x.setParent(y)
-			y.setParent(parent)
-			if relToPar != "root":
-				if relToPar == "right":
-					parent.setRight(y)
-				else:
-					parent.setLeft(y)
-		else:
-			parent = x.getParent()
-			relToPar = x.relationToParent()
-			y = x.getRight()
-			x.setRight(y.getLeft())
-			x.getRight().setParent(x)
-			y.setLeft(x)
-			x.setParent(y)
-			y.setParent(parent)
-			if relToPar != "root":
-				if relToPar == "right":
-					parent.setRight(y)
-				else:
-					parent.setLeft(y)
-		x.resetSize()
-		x.resetHeight()
-		y.resetSize()
-		y.resetHeight()
-		if relToPar != "root":
-			parent.resetSize()
-			parent.resetHeight()
+    def rotate(self, side):
+        x = self
+        if side == "right":
+            parent = x.getParent()
+            relToPar = x.relationToParent()
+            y = x.getLeft()
+            x.setLeft(y.getRight())
+            x.getLeft().setParent(x)
+            y.setRight(x)
+            x.setParent(y)
+            y.setParent(parent)
+            if relToPar != "root":
+                if relToPar == "right":
+                    parent.setRight(y)
+                else:
+                    parent.setLeft(y)
+        else:
+            parent = x.getParent()
+            relToPar = x.relationToParent()
+            y = x.getRight()
+            x.setRight(y.getLeft())
+            x.getRight().setParent(x)
+            y.setLeft(x)
+            x.setParent(y)
+            y.setParent(parent)
+            if relToPar != "root":
+                if relToPar == "right":
+                    parent.setRight(y)
+                else:
+                    parent.setLeft(y)
+        x.resetSize()
+        x.resetHeight()
+        y.resetSize()
+        y.resetHeight()
+        if relToPar != "root":
+            parent.resetSize()
+            parent.resetHeight()
 
     def setSize(self, size):
         self.size = size
@@ -395,19 +390,19 @@ class AVLTreeList(object):
         new_tree = self.copyTree(self.getRoot())
 
 
-	def copyTree(self, root):
-		new_node = AVLNode(root.getValue())
+    def copyTree(self, root):
+        new_node = AVLNode(root.getValue())
 
-		left_child = self.copyTree(root.getLeft())
-		right_child = self.copyTree(root.getRight())
+        left_child = self.copyTree(root.getLeft())
+        right_child = self.copyTree(root.getRight())
 
-		new_node.setLeft(left_child)
-		new_node.setRight(right_child)
+        new_node.setLeft(left_child)
+        new_node.setRight(right_child)
 
-		left_child.setParent(new_node)
-		right_child.setParent(new_node)
+        left_child.setParent(new_node)
+        right_child.setParent(new_node)
 
-		return new_node
+        return new_node
 
 
     """concatenates lst to self
@@ -497,9 +492,6 @@ class AVLTreeList(object):
                 node = parent
         return cnt_rebalanced
 
-
-    def successor(self, node):
-        return node
 
     def replace_nodes(self, node1: AVLNode, node2: AVLNode):
         node1.parent, node1.left, node1.right, node2.parent, node2.left, node2.right = node2.parent, node2.left, node2.right, node1.parent, node1.left, node1.right
