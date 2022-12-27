@@ -352,13 +352,16 @@ class AVLTreeList(object):
     @returns: a list of strings representing the data structure
     """
 
-    def listToArray(self):
+    def listToArray(self) -> list:
         return self.listToArrayRec(self.root)
 
-    def listToArrayRec(self, node):
+    def listToArrayRec(self, node) -> list:
         if not node.isRealNode():
             return []
-        return self.listToArrayRec(node.getLeft()) + [node.value] + self.listToArrayRec(node.getRight())
+        result = self.listToArrayRec(node.getLeft())
+        result.append(node.value)
+        result.extend(self.listToArrayRec(node.getRight()))
+        return result
 
     def getSize(self):
         return self.size
@@ -377,9 +380,48 @@ class AVLTreeList(object):
     @rtype: list
     @returns: an AVLTreeList where the values are sorted by the info of the original list.
     """
+    """"""
 
-    def sort(self):
-        return None
+    def sort(self) -> list:
+        arr = self.listToArray()
+        arr, cnt_nones = self.relocate_nones_to_the_end(arr)
+        self.merge_sort(arr, 0, len(arr) - cnt_nones)
+        return arr
+
+
+    """
+    Sort the given array using the merge sort algorithm.
+
+    @pre: The array is not empty.
+
+    @post: The array is sorted in ascending order.
+    """
+
+    def merge_sort(self, arr: list, i, j):
+        # Base case: if the array is of length 0 or 1, it is already sorted
+        if j <= i:
+            return
+        if j - i == 1:
+            arr[i], arr[j] = min(arr[i], arr[j]), max(arr[i], arr[j])
+        # Recursively sort the left and right halves of the array
+        self.merge_sort(arr, i, (i + j) // 2)
+        self.merge_sort(arr, ((i + j) // 2) + 1, j)
+
+    """
+    Relocate the None values to the end of the array and return the resulting array and the count of None values.
+
+    @pre: The array is not empty.
+
+    @post: None values are at the end of the array.
+    """
+    def relocate_nones_to_the_end(self, arr: list) -> (list, int):
+        # Count the number of None values in the array
+        cnt_nones = 0
+        for val in arr:
+            if val is None:
+                cnt_nones += 1
+        # Relocate the None values to the end of the array
+        return [val for val in arr if val is not None].extend([None for _ in range(cnt_nones)]), cnt_nones
 
     """permute the info values of the list 
     
@@ -426,7 +468,7 @@ class AVLTreeList(object):
         if lst.empty():
             return self.root.getHeight()
         if self.size == 1:
-            lst.insert(0, self.root.getValue())
+            # lst.insert(0, self.root.getValue())
             self.root = lst.root
             self.first = lst.first
             self.last = lst.last
