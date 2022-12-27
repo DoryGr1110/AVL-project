@@ -8,6 +8,7 @@
 
 """A class representing a node in an AVL tree"""
 
+
 class AVLNode(object):
     """Constructor, you are allowed to add more fields.
 
@@ -196,6 +197,8 @@ class AVLNode(object):
         self.setRight(virtual_node2)
 
 
+
+
 """
 A class implementing the ADT list, using an AVL tree.
 """
@@ -208,10 +211,10 @@ class AVLTreeList(object):
 
     def __init__(self):
         self.size = 0
-        self.root = None
+        self.root: AVLNode = None
         # add your fields here
-        self.first = None
-        self.last = None
+        self.first: AVLNode = None
+        self.last: AVLNode = None
 
 
     """returns whether the list is empty
@@ -365,6 +368,8 @@ class AVLTreeList(object):
             return []
         return self.listToArrayRec(node.getLeft()) + [node.value] + self.listToArrayRec(node.getRight())
 
+    def getSize(self):
+        return self.size
 
     """returns the size of the list 
     
@@ -418,7 +423,38 @@ class AVLTreeList(object):
     """
 
     def concat(self, lst):
-        return None
+        dif = abs(self.root.getHeight() - lst.root.getHeight())
+        # concat lst after self. use self's last as the connecting node
+        connecting_node = self.last
+        self.delete(self.length() - 1)
+        connecting_node.setParent(None)
+        p_self = self.root
+        p_lst: AVLNode = lst.root
+        parent_node_tree = None
+        if p_self.getHeight() < p_lst.getHeight():
+            parent_node_tree = lst
+            while p_self.getHeight() < p_lst.getHeight():
+                p_lst = p_lst.getLeft()
+        elif p_self.getHeight() > p_lst.getHeight():
+            parent_node_tree = self
+            while p_self.getHeight() > p_lst.getHeight():
+                p_self = p_self.getRight()
+        connecting_node.setRight(p_self)
+        connecting_node.setLeft(p_lst)
+        if parent_node_tree is None:
+            connecting_node.setParent(None)
+            self.root = connecting_node
+        elif parent_node_tree == self:
+            connecting_node.setParent(p_self.getParent())
+            p_self.getParent().setRight(connecting_node)
+        elif parent_node_tree == lst:
+            connecting_node.setParent(p_lst.getParent())
+            p_lst.getParent().setLeft(connecting_node)
+        connecting_node.resetSize()
+        connecting_node.resetHeight()
+        self.size += lst.getSize()
+        self.balance_all_the_way_up(connecting_node)
+        return dif
 
     """searches for a *value* in the list
     
