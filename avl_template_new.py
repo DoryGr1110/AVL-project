@@ -418,13 +418,19 @@ class AVLTreeList(object):
         if self.empty() and lst.empty():
             return 0
         if self.empty():
-            self = lst
+            self.root = lst.root
+            self.first = lst.first
+            self.last = lst.last
+            self.size = lst.size
             return lst.root.getHeight()
         if lst.empty():
             return self.root.getHeight()
         if self.size == 1:
             lst.insert(0, self.root.getValue())
-            self = lst
+            self.root = lst.root
+            self.first = lst.first
+            self.last = lst.last
+            self.size = lst.size
             return lst.root.getHeight() - 1
         dif = abs(self.root.getHeight() - lst.root.getHeight())  # the return value
         # concat lst after self. use self's last as the connecting node
