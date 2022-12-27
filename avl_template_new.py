@@ -5,7 +5,6 @@
 # name2    - complete info
 
 
-
 """A class representing a node in an AVL tree"""
 
 
@@ -73,7 +72,6 @@ class AVLNode(object):
 
     def getSize(self):
         return self.size
-
 
     """sets left child
 
@@ -197,8 +195,6 @@ class AVLNode(object):
         self.setRight(virtual_node2)
 
 
-
-
 """
 A class implementing the ADT list, using an AVL tree.
 """
@@ -216,12 +212,12 @@ class AVLTreeList(object):
         self.first: AVLNode = None
         self.last: AVLNode = None
 
-
     """returns whether the list is empty
     
     @rtype: bool
     @returns: True if the list is empty, False otherwise
     """
+
     def empty(self):
         return self.size == 0
 
@@ -260,7 +256,6 @@ class AVLTreeList(object):
         self.test_insert_and_delete(new_node)
         return cnt_rebalanced
 
-
     def test_insert_and_delete(self, node: AVLNode):
         assert node.isRealNode()
         assert not node.getLeft().isRealNode()
@@ -269,8 +264,6 @@ class AVLTreeList(object):
             assert node.getSize() == 1 + node.getLeft().getSize() + node.getRight().getSize()
             assert node.getHeight() == 1 + max(node.getLeft().getHeight(), node.getRight().getHeight())
             node = node.getParent()
-
-
 
     """deletes the i'th item in the list
     
@@ -305,7 +298,7 @@ class AVLTreeList(object):
                 parent.setRight(None)
             else:
                 parent.setLeft(None)
-        elif node_to_delete.getRight() is None:    # node has 1 son
+        elif node_to_delete.getRight() is None:  # node has 1 son
             if rel_to_parent == "left":
                 parent.setLeft(node_to_delete.getRight())
                 parent.getLeft().setParent(parent)
@@ -341,7 +334,6 @@ class AVLTreeList(object):
         if self.empty():
             return None
         return self.first.getValue()
-
 
     """returns the value of the last item in the list
     
@@ -398,7 +390,6 @@ class AVLTreeList(object):
     def permutation(self):
         new_tree = self.copyTree(self.getRoot())
 
-
     def copyTree(self, root):
         new_node = AVLNode(root.getValue())
 
@@ -413,7 +404,6 @@ class AVLTreeList(object):
 
         return new_node
 
-
     """concatenates lst to self
     
     @type lst: AVLTreeList
@@ -423,7 +413,20 @@ class AVLTreeList(object):
     """
 
     def concat(self, lst):
-        dif = abs(self.root.getHeight() - lst.root.getHeight())
+        lst: AVLTreeList
+        # resolve all edge cases
+        if self.empty() and lst.empty():
+            return 0
+        if self.empty():
+            self = lst
+            return lst.root.getHeight()
+        if lst.empty():
+            return self.root.getHeight()
+        if self.size == 1:
+            lst.insert(0, self.root.getValue())
+            self = lst
+            return lst.root.getHeight() - 1
+        dif = abs(self.root.getHeight() - lst.root.getHeight())  # the return value
         # concat lst after self. use self's last as the connecting node
         connecting_node = self.last
         self.delete(self.length() - 1)
@@ -487,7 +490,6 @@ class AVLTreeList(object):
                 p = p.getParent()
             return p.getParent()
 
-
     def getRoot(self):
         return self.root
 
@@ -531,7 +533,6 @@ class AVLTreeList(object):
             else:
                 node = parent
         return cnt_rebalanced
-
 
     def replace_nodes(self, node1: AVLNode, node2: AVLNode):
         node1.parent, node1.left, node1.right, node2.parent, node2.left, node2.right = node2.parent, node2.left, node2.right, node1.parent, node1.left, node1.right
@@ -627,7 +628,6 @@ def test():
             rootd.getHeight() != 1):
         print("***error in rotate method***")
 
+
 if __name__ == "__main__":
     print()
-
-
