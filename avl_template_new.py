@@ -468,11 +468,7 @@ class AVLTreeList(object):
         if lst.empty():
             return self.root.getHeight()
         if self.size == 1:
-            # lst.insert(0, self.root.getValue())
-            self.root = lst.root
-            self.first = lst.first
-            self.last = lst.last
-            self.size = lst.size
+            lst.insert(0, self.root.getValue())
             return lst.root.getHeight() - 1
         dif = abs(self.root.getHeight() - lst.root.getHeight())  # the return value
         # concat lst after self. use self's last as the connecting node
@@ -516,7 +512,42 @@ class AVLTreeList(object):
     """
 
     def search(self, val):
-        return None
+        node = self.search_node_rec(self.root, val)
+        if node is None:
+            return -1
+
+
+    def search_node_rec(self, node: AVLNode, val):
+        if not node.isRealNode():
+            return None
+        if node.getValue() == val:
+            return node
+        left = self.search_node_rec(node.getLeft(), val)
+        if left is not None:
+            return left
+        right = self.search_node_rec(node.getRight(), val)
+        if right is not None:
+            return right
+        return
+
+    """
+   Returns the index of the given node in the sorted list of nodes in the AVL tree.
+   @pre: node is a valid AVLNode instance belonging to the AVL tree.
+   """
+
+    def get_node_index(self, node: AVLNode):
+        # Initialize the sum of sizes to the size of the left subtree of the given node
+        sum_size = node.getLeft().getSize()
+
+        # Traverse the tree starting from the given node and adding the size of the left
+        # subtree of each parent node to the sum if the current node is a right child
+        p = node
+        while p.getParent() is not None:
+            if p.relationToParent() == "right":
+                sum_size += p.getParent().getLeft().getSize() + 1
+            p = p.getParent()
+
+        return sum_size
 
     """returns the root of the tree representing the list
     
