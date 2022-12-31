@@ -1,9 +1,9 @@
-# username - complete info
-# id1      - complete info
-# name1    - complete info
+# username - avishays
+# id1      - 208748665
+# name1    - Avishay Spitzer
 # id2      - complete info
 # name2    - complete info
-
+# TODO
 
 """A class representing a node in an AVL tree"""
 
@@ -388,7 +388,6 @@ class AVLTreeList(object):
         self.merge_sort(arr, 0, len(arr) - cnt_nones)
         return arr
 
-
     """
     Sort the given array using the merge sort algorithm.
 
@@ -414,6 +413,7 @@ class AVLTreeList(object):
 
     @post: None values are at the end of the array.
     """
+
     def relocate_nones_to_the_end(self, arr: list) -> (list, int):
         # Count the number of None values in the array
         cnt_nones = 0
@@ -430,9 +430,68 @@ class AVLTreeList(object):
     """
 
     def permutation(self):
-        return None
+        array_tree = self.listToArray()
+        array_result = []
+        indexes = set(range(len(array_tree)))
+        for _ in range(len(array_tree)):
+            index = indexes.pop()
+            array_result.append(array_tree[index])
+        result = self.build_tree_from_array(array_result)
+        self.balance_if_needed(result.root)
+        return result
 
-    def copyTree(self):
+    def build_tree_from_array(self, array: list):
+        result = AVLTreeList()
+        if len(array) == 0:
+            return result
+        result.root = AVLNode(self.root.getValue())
+        self.build_tree_from_array_rec(result.root, array, 0, len(array))
+        result.size = result.root.size
+        result.first = result.retrieveNode(0)
+        result.last = result.retrieveNode(result.size - 1)
+        return result
+
+    def build_tree_from_array_rec(self, node: AVLNode, array: list, i, j):
+        mid = (i + j) // 2
+        node.setValue(array[mid])
+        if mid == i:
+            virtual_node = AVLNode("")
+            virtual_node.setParent(node)
+            virtual_node.setHeight(-1)
+            virtual_node.setSize(0)
+            node.setLeft(virtual_node)
+        else:
+            left = AVLNode("place holder")
+            node.setLeft(left)
+            left.setParent(node)
+            self.build_tree_from_array_rec(left, array, i, mid - 1)
+            left.resetSize()
+            left.resetHeight()
+        if mid == j:
+            virtual_node = AVLNode("")
+            virtual_node.setParent(node)
+            virtual_node.setHeight(-1)
+            virtual_node.setSize(0)
+            node.setRight(virtual_node)
+        else:
+            right = AVLNode("place holder")
+            node.setRight(right)
+            right.setParent(node)
+            self.build_tree_from_array_rec(right, array, mid + 1, j)
+            right.resetSize()
+            right.resetHeight()
+        node.resetSize()
+        node.resetHeight()
+
+    def balance_if_needed(self, node: AVLNode):
+        if not node.isRealNode():
+            return
+        self.balance_if_needed(node.getLeft())
+        self.balance_if_needed(node.getRight())
+        if abs(node.getBF()) > 1:
+            self.balance_all_the_way_up(node)
+
+    def copy_tree(self):
         new_tree = AVLTreeList()
         if self.empty():
             return new_tree
@@ -441,7 +500,7 @@ class AVLTreeList(object):
         new_tree.size = new_tree.getSize()
         new_tree.first = new_tree.retrieveNode(0)
         new_tree.last = new_tree.retrieveNode(new_tree.size - 1)
-        return None
+        return new_tree
 
     def copy_tree_rec(self, old_node: AVLNode, new_node: AVLNode):
         new_node.setValue(old_node.getValue())
@@ -534,7 +593,6 @@ class AVLTreeList(object):
         self.size += lst.getSize()
         self.balance_all_the_way_up(connecting_node)
         return dif
-
 
     """searches for a *value* in the list
 
