@@ -430,21 +430,49 @@ class AVLTreeList(object):
     """
 
     def permutation(self):
-        new_tree = self.copyTree(self.getRoot())
+        return None
 
-    def copyTree(self, root):
-        new_node = AVLNode(root.getValue())
+    def copyTree(self):
+        new_tree = AVLTreeList()
+        if self.empty():
+            return new_tree
+        new_tree.root = AVLNode(self.root.getValue())
+        self.copy_tree_rec(self.root, new_tree.root)
+        new_tree.size = new_tree.getSize()
+        new_tree.first = new_tree.retrieveNode(0)
+        new_tree.last = new_tree.retrieveNode(new_tree.size - 1)
+        return None
 
-        left_child = self.copyTree(root.getLeft())
-        right_child = self.copyTree(root.getRight())
-
-        new_node.setLeft(left_child)
-        new_node.setRight(right_child)
-
-        left_child.setParent(new_node)
-        right_child.setParent(new_node)
-
-        return new_node
+    def copy_tree_rec(self, old_node: AVLNode, new_node: AVLNode):
+        new_node.setValue(old_node.getValue())
+        if old_node.getLeft().isRealNode():
+            left = AVLNode(old_node.getLeft().getValue())
+            new_node.setLeft(left)
+            left.setParent(new_node)
+            self.copy_tree_rec(old_node.getLeft(), left)
+            left.resetSize()
+            left.resetHeight()
+        else:
+            virtual_node = AVLNode("")
+            virtual_node.setParent(new_node)
+            virtual_node.setHeight(-1)
+            virtual_node.setSize(0)
+            new_node.setLeft(virtual_node)
+        if old_node.getRight().isRealNode():
+            right = AVLNode(old_node.getRight().getValue())
+            new_node.setRight(right)
+            right.setParent(new_node)
+            self.copy_tree_rec(old_node.getRight(), right)
+            right.resetSize()
+            right.resetHeight()
+        else:
+            virtual_node = AVLNode("")
+            virtual_node.setParent(new_node)
+            virtual_node.setHeight(-1)
+            virtual_node.setSize(0)
+            new_node.setRight(virtual_node)
+        new_node.resetSize()
+        new_node.resetHeight()
 
     """concatenates lst to self
     
