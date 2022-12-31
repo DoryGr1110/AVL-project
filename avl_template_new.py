@@ -516,7 +516,6 @@ class AVLTreeList(object):
         if node is None:
             return -1
 
-
     def search_node_rec(self, node: AVLNode, val):
         if not node.isRealNode():
             return None
