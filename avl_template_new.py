@@ -530,9 +530,9 @@ class AVLTreeList(object):
             self.firstNode = lst.firstNode
             self.lastNode = lst.lastNode
             self.size = lst.size
-            return lst.root.getHeight()
+            return lst.root.getHeight() + 1
         if lst.empty():
-            return self.root.getHeight()
+            return self.root.getHeight() + 1
         if self.size == 1:
             lst.insert(0, self.root.getValue())
             self.root = lst.root
@@ -542,6 +542,8 @@ class AVLTreeList(object):
             return lst.root.getHeight() - 1
         dif = abs(self.root.getHeight() - lst.root.getHeight())  # the return value
         # concat lst after self. use self's last as the connecting node
+        first = self.firstNode
+        last = lst.lastNode
         connecting_node = self.lastNode
         self.delete(self.length() - 1)
         connecting_node.setParent(None)
@@ -556,8 +558,8 @@ class AVLTreeList(object):
             parent_node_tree = self
             while p_self.getHeight() > p_lst.getHeight():
                 p_self = p_self.getRight()
-        connecting_node.setRight(p_self)
-        connecting_node.setLeft(p_lst)
+        connecting_node.setRight(p_lst)
+        connecting_node.setLeft(p_self)
         if parent_node_tree is None:
             connecting_node.setParent(None)
             self.root = connecting_node
@@ -567,9 +569,12 @@ class AVLTreeList(object):
         elif parent_node_tree == lst:
             connecting_node.setParent(p_lst.getParent())
             p_lst.getParent().setLeft(connecting_node)
+            self.root = lst.root
         connecting_node.resetSize()
         connecting_node.resetHeight()
-        self.size += lst.getSize()
+        self.firstNode = first
+        self.lastNode = last
+        self.size += lst.getSize() + 1
         self.balance_all_the_way_up(connecting_node)
         return dif
 
@@ -582,9 +587,13 @@ class AVLTreeList(object):
     """
 
     def search(self, val):
+        if self.root == None:
+            return -1
         node = self.search_node_rec(self.root, val)
         if node is None:
             return -1
+        else:
+            return self.get_node_index(node)
 
     def search_node_rec(self, node: AVLNode, val):
         if not node.isRealNode():
