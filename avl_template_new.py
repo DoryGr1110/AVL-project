@@ -453,6 +453,7 @@ class AVLTreeList(object):
         arr = self.listToArray()
         arr, cnt_nones = self.relocate_nones_to_the_end(arr)
         arr = self.merge_sorted(arr, 0, len(arr) - cnt_nones - 1)
+        arr.extend([None for i in range(cnt_nones)])
         result = self.build_tree_from_array(arr)
         self.balance_if_needed(result.root)
         return result
@@ -470,7 +471,7 @@ class AVLTreeList(object):
         if j < i:
             return []
         if j == i:
-            return arr[i]
+            return [arr[i]]
         if j - i == 1:
             return [min(arr[i], arr[j]), max(arr[i], arr[j])]
         # Recursively sort the left and right halves of the array
