@@ -638,8 +638,8 @@ class AVLTreeList(object):
             return 0
         if self.empty():
             self.root = lst.root
-            self.firstNode = lst.first
-            self.lastNode = lst.last
+            self.firstNode = lst.firstNode
+            self.lastNode = lst.lastNode
             self.size = lst.size
             return lst.root.getHeight() + 1
         if lst.empty():
@@ -698,9 +698,13 @@ class AVLTreeList(object):
         """
 
     def search(self, val):
+        if self.root == None:
+            return -1
         node = self.search_node_rec(self.root, val)
         if node is None:
             return -1
+        else:
+            return self.get_node_index(node)
 
     def search_node_rec(self, node: AVLNode, val):
         if not node.isRealNode():
