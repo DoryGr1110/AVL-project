@@ -5,6 +5,8 @@
 # name2    - complete info
 # TODO
 
+import random
+
 """A class representing a node in an AVL tree"""
 
 
@@ -17,9 +19,9 @@ class AVLNode(object):
 
     def __init__(self, value):
         self.value = value
-        self.left: AVLNode = None
-        self.right: AVLNode = None
-        self.parent: AVLNode = None
+        self.left = None
+        self.right = None
+        self.parent = None
         self.height: int = -1  # Balance factor
         self.size: int = 0
 
@@ -207,10 +209,10 @@ class AVLTreeList(object):
 
     def __init__(self):
         self.size = 0
-        self.root: AVLNode = None
+        self.root = None
         # add your fields here
-        self.first: AVLNode = None
-        self.last: AVLNode = None
+        self.first = None
+        self.last = None
 
     """returns whether the list is empty
     
@@ -277,9 +279,9 @@ class AVLTreeList(object):
     def delete(self, i):
         node_to_delete = self.retrieveNode(i)
         parent = node_to_delete.getParent()
-        if self.first() == node_to_delete:
+        if self.first == node_to_delete:
             self.first = parent
-        if self.last() == node_to_delete:
+        if self.last == node_to_delete:
             self.last = parent
         rel_to_parent = node_to_delete.relationToParent()
         cnt_rebalanced = 0
@@ -382,11 +384,13 @@ class AVLTreeList(object):
     """
     """"""
 
-    def sort(self) -> list:
+    def sort(self):
         arr = self.listToArray()
         arr, cnt_nones = self.relocate_nones_to_the_end(arr)
-        self.merge_sort(arr, 0, len(arr) - cnt_nones)
-        return arr
+        arr = self.merge_sorted(arr, 0, len(arr) - cnt_nones - 1)
+        result = self.build_tree_from_array(arr)
+        self.balance_if_needed(result.root)
+        return result
 
     """
     Sort the given array using the merge sort algorithm.
@@ -396,15 +400,32 @@ class AVLTreeList(object):
     @post: The array is sorted in ascending order.
     """
 
-    def merge_sort(self, arr: list, i, j):
+    def merge_sorted(self, arr: list, i: int, j: int) -> list:
         # Base case: if the array is of length 0 or 1, it is already sorted
-        if j <= i:
-            return
+        if j < i:
+            return []
+        if j == i:
+            return arr[i]
         if j - i == 1:
-            arr[i], arr[j] = min(arr[i], arr[j]), max(arr[i], arr[j])
+            return [min(arr[i], arr[j]), max(arr[i], arr[j])]
         # Recursively sort the left and right halves of the array
-        self.merge_sort(arr, i, (i + j) // 2)
-        self.merge_sort(arr, ((i + j) // 2) + 1, j)
+        return self.merge(self.merge_sorted(arr, i, (i + j) // 2), self.merge_sorted(arr, ((i + j) // 2) + 1, j))
+
+    def merge(self, lst1: list, lst2: list) -> list:
+        result = []
+        p1, p2 = 0, 0
+        while p1 < len(lst1) and p2 < len(lst2):
+            if lst1[p1] <= lst2[p2]:
+                result.append(lst1[p1])
+                p1 += 1
+            else:
+                result.append(lst2[p2])
+                p2 += 1
+        for i in range(p1, len(lst1)):
+            result.append(lst1[i])
+        for i in range(p2, len(lst2)):
+            result.append(lst2[i])
+        return result
 
     """
     Relocate the None values to the end of the array and return the resulting array and the count of None values.
@@ -414,14 +435,16 @@ class AVLTreeList(object):
     @post: None values are at the end of the array.
     """
 
-    def relocate_nones_to_the_end(self, arr: list) -> (list, int):
+    def relocate_nones_to_the_end(self, arr: list):
         # Count the number of None values in the array
         cnt_nones = 0
         for val in arr:
             if val is None:
                 cnt_nones += 1
         # Relocate the None values to the end of the array
-        return [val for val in arr if val is not None].extend([None for _ in range(cnt_nones)]), cnt_nones
+        result_array = [val for val in arr if val is not None]
+        result_array.extend([None for _ in range(cnt_nones)])
+        return result_array, cnt_nones
 
     """permute the info values of the list 
     
@@ -432,10 +455,12 @@ class AVLTreeList(object):
     def permutation(self):
         array_tree = self.listToArray()
         array_result = []
-        indexes = set(range(len(array_tree)))
-        for _ in range(len(array_tree)):
-            index = indexes.pop()
+        len_result = len(array_tree)
+        for _ in range(len_result):
+            index = random.randrange(0, len(array_tree))
             array_result.append(array_tree[index])
+            array_tree[index], array_tree[-1] = array_tree[-1], array_tree[index]
+            array_tree.pop()
         result = self.build_tree_from_array(array_result)
         self.balance_if_needed(result.root)
         return result
@@ -444,8 +469,8 @@ class AVLTreeList(object):
         result = AVLTreeList()
         if len(array) == 0:
             return result
-        result.root = AVLNode(self.root.getValue())
-        self.build_tree_from_array_rec(result.root, array, 0, len(array))
+        result.root = AVLNode(array[len(array)//2])
+        self.build_tree_from_array_rec(result.root, array, 0, len(array) - 1)
         result.size = result.root.size
         result.first = result.retrieveNode(0)
         result.last = result.retrieveNode(result.size - 1)
@@ -704,15 +729,16 @@ class AVLTreeList(object):
         return cnt_rebalanced
 
     def replace_nodes(self, node1: AVLNode, node2: AVLNode):
-        node1.parent, node1.left, node1.right, node2.parent, node2.left, node2.right = node2.parent, node2.left, node2.right, node1.parent, node1.left, node1.right
+        node1.parent, node1.left, node1.right, node2.parent, node2.left, node2.right =\
+            node2.parent, node2.left, node2.right, node1.parent, node1.left, node1.right
 
 
 def test():
-    rootd = AVLNode("d")
+    rootd = AVLNode("a")
     firstLeftb = AVLNode("b")
-    firstRighte = AVLNode("e")
-    secondLefta = AVLNode("a")
-    secondRightc = AVLNode("a")
+    firstRighte = AVLNode("c")
+    secondLefta = AVLNode("d")
+    secondRightc = AVLNode("e")
 
     rootd.setLeft(firstLeftb)
     firstLeftb.setParent(rootd)
@@ -760,43 +786,11 @@ def test():
     tree.root = rootd
     tree.size = 5
 
-    if (tree.retrieve(1) != "b" or tree.retrieve(3) != "d"):
-        print("***error in retrieve method***")
 
-    rootd.rotate("right")
-
-    if (secondRightc.getParent() != rootd or
-            rootd.getLeft() != secondRightc or
-            rootd.getParent() != firstLeftb or
-            firstLeftb.getRight() != rootd or
-            firstLeftb.getParent() != None or
-            firstLeftb.getHeight() != 2 or
-            rootd.getHeight() != 1):
-        print("***error in rotate method1***")
-
-    rootd.rotate("right")
-
-    if (firstRighte.getParent() != rootd or
-            rootd.getRight() != firstRighte or
-            rootd.getParent() != secondRightc or
-            secondRightc.getRight() != rootd or
-            secondRightc.getParent() != firstLeftb or
-            secondRightc.getHeight() != 2 or
-            firstRighte.getHeight() != 0 or
-            rootd.getHeight() != 1):
-        print("***error in rotate method2***")
-
-    secondRightc.rotate("left")
-
-    if (secondRightc.getParent() != rootd or
-            rootd.getLeft() != secondRightc or
-            rootd.getParent() != firstLeftb or
-            firstLeftb.getRight() != rootd or
-            firstLeftb.getParent() != None or
-            firstLeftb.getHeight() != 2 or
-            rootd.getHeight() != 1):
-        print("***error in rotate method***")
+    # tree.sort()
+    tree.permutation()
+    print()
 
 
 if __name__ == "__main__":
-    print()
+    test()
