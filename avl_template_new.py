@@ -204,7 +204,7 @@ class AVLTreeList(object):
     """
 
     def retrieve(self, i):
-        if (0 > i or i >= self.length()):
+        if 0 > i or i >= self.length():
             return None
         return self.retrieveNode(i).getValue()
 
@@ -293,11 +293,11 @@ class AVLTreeList(object):
 
     def path_to_leaf(self, node: AVLNode):
         if not node.getLeft().isRealNode():
-            return (node, 0)
+            return node, 0
         p = node.getLeft()
         while p.getRight().isRealNode():
             p = p.getRight()
-        return (p, 1)
+        return p, 1
 
     def test_insert_and_delete(self, node: AVLNode):
         assert node.isRealNode()
@@ -318,7 +318,7 @@ class AVLTreeList(object):
     """
 
     def delete(self, i):
-        if (0 > i or i >= self.length()):
+        if 0 > i or i >= self.length():
             return -1
         node_to_delete = self.retrieveNode(i)
         parent = node_to_delete.getParent()
@@ -821,95 +821,7 @@ class AVLTreeList(object):
     def append(self, val):
         self.insert(self.length(), val)
 
-def test():
-    rootd = AVLNode("d")
-    firstLeftb = AVLNode("b")
-    firstRighte = AVLNode("e")
-    secondLefta = AVLNode("a")
-    secondRightc = AVLNode("a")
 
-    rootd.setLeft(firstLeftb)
-    firstLeftb.setParent(rootd)
-    rootd.setRight(firstRighte)
-    firstRighte.setParent(rootd)
-
-    firstLeftb.setLeft(secondLefta)
-    secondLefta.setParent(firstLeftb)
-    firstLeftb.setRight(secondRightc)
-    secondRightc.setParent(firstLeftb)
-
-    virtual1 = AVLNode("virtual1")
-    virtual2 = AVLNode("virtual2")
-    virtual3 = AVLNode("virtual3")
-    virtual4 = AVLNode("virtual4")
-    virtual5 = AVLNode("virtual5")
-    virtual6 = AVLNode("virtual6")
-
-    virtual1.setParent(secondLefta)
-    secondLefta.setLeft(virtual1)
-    virtual2.setParent(secondLefta)
-    secondLefta.setRight(virtual2)
-    virtual3.setParent(secondRightc)
-    secondRightc.setLeft(virtual3)
-    virtual4.setParent(secondRightc)
-    secondRightc.setRight(virtual4)
-    virtual5.setParent(firstRighte)
-    firstRighte.setLeft(virtual5)
-    virtual6.setParent(firstRighte)
-    firstRighte.setRight(virtual6)
-
-    rootd.resetHeight()
-    firstLeftb.resetHeight()
-    firstRighte.resetHeight()
-    secondLefta.resetHeight()
-    secondRightc.resetHeight()
-
-    secondRightc.resetSize()
-    secondLefta.resetSize()
-    firstRighte.resetSize()
-    firstLeftb.resetSize()
-    rootd.resetSize()
-
-    tree = AVLTreeList()
-    tree.root = rootd
-    tree.size = 5
-
-    if (tree.retrieve(1) != "b" or tree.retrieve(3) != "d"):
-        print("***error in retrieve method***")
-
-    rootd.rotate("right")
-
-    if (secondRightc.getParent() != rootd or
-            rootd.getLeft() != secondRightc or
-            rootd.getParent() != firstLeftb or
-            firstLeftb.getRight() != rootd or
-            firstLeftb.getParent() != None or
-            firstLeftb.getHeight() != 2 or
-            rootd.getHeight() != 1):
-        print("***error in rotate method1***")
-
-    rootd.rotate("right")
-
-    if (firstRighte.getParent() != rootd or
-            rootd.getRight() != firstRighte or
-            rootd.getParent() != secondRightc or
-            secondRightc.getRight() != rootd or
-            secondRightc.getParent() != firstLeftb or
-            secondRightc.getHeight() != 2 or
-            firstRighte.getHeight() != 0 or
-            rootd.getHeight() != 1):
-        print("***error in rotate method2***")
-
-    secondRightc.rotate("left")
-
-    if (secondRightc.getParent() != rootd or
-            rootd.getLeft() != secondRightc or
-            rootd.getParent() != firstLeftb or
-            firstLeftb.getRight() != rootd or
-            firstLeftb.getParent() != None or
-            firstLeftb.getHeight() != 2 or
-            rootd.getHeight() != 1):
-        print("***error in rotate method***")
 
 def test2():
     twentyTree = AVLTreeList()
@@ -924,5 +836,4 @@ def test2():
 
 
 if __name__ == "__main__":
-    # test()
     test2()
