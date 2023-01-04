@@ -539,6 +539,12 @@ class AVLTreeList(object):
 
     @type: node: AVLNode
     @param: node: node that rooted the tree representation of the list
+    @type: arr: list
+    @param: arr: list that update with self value
+    @type: i: int
+    @param: i: index of the first element in the list
+    @type: j: int
+    @param: j: index of the last element in the list
     @rtype: list
     @returns: a list of strings representing the data structure rooted by node
     @complexity: O(n)
