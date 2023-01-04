@@ -553,13 +553,13 @@ class AVLTreeList(object):
         if i == j:
             arr[i] = node.getValue()
         else:
-            node_rnk = node.getLeft().getSize()
-            tmp = node_rnk + i
-            arr[tmp] = node.getValue()
+            node_rank = node.getLeft().getSize()
+            new_rank = node_rank + i
+            arr[new_rank] = node.getValue()
             if node.getLeft().isRealNode():
-                self.listToArrayRec(node.getLeft(), arr, i, tmp - 1)
+                self.listToArrayRec(node.getLeft(), arr, i, new_rank - 1)
             if node.getRight().isRealNode():
-                self.listToArrayRec(node.getRight(), arr, tmp + 1, j)
+                self.listToArrayRec(node.getRight(), arr, new_rank + 1, j)
 
 
     """returns the size of the list 
